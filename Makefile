@@ -12,16 +12,16 @@ ifeq ($(COMPILE_PLATFORM),sunos)
 endif
 
 ifndef BUILD_STANDALONE
-  BUILD_STANDALONE =
+  BUILD_STANDALONE = 1
 endif
 ifndef BUILD_CLIENT
-  BUILD_CLIENT     =
+  BUILD_CLIENT     = 1
 endif
 ifndef BUILD_SERVER
-  BUILD_SERVER     =
+  BUILD_SERVER     = 1
 endif
 ifndef BUILD_GAME_SO
-  BUILD_GAME_SO    =
+  BUILD_GAME_SO    = 1
 endif
 ifndef BUILD_GAME_QVM
   BUILD_GAME_QVM   =
@@ -30,10 +30,10 @@ ifndef BUILD_BASEGAME
   BUILD_BASEGAME =
 endif
 ifndef BUILD_MISSIONPACK
-  BUILD_MISSIONPACK=
+  BUILD_MISSIONPACK=0
 endif
 ifndef BUILD_RENDERER_OPENGL2
-  BUILD_RENDERER_OPENGL2=
+  BUILD_RENDERER_OPENGL2=1
 endif
 ifndef BUILD_AUTOUPDATER  # DON'T build unless you mean to!
   BUILD_AUTOUPDATER=0
@@ -104,19 +104,19 @@ endif
 export CROSS_COMPILING
 
 ifndef VERSION
-VERSION=1.36
+VERSION=1.7
 endif
 
 ifndef CLIENTBIN
-CLIENTBIN=ioquake3
+CLIENTBIN=wop
 endif
 
 ifndef SERVERBIN
-SERVERBIN=ioq3ded
+SERVERBIN=wopded
 endif
 
 ifndef BASEGAME
-BASEGAME=baseq3
+BASEGAME=wop
 endif
 
 ifndef BASEGAME_CFLAGS
@@ -132,7 +132,7 @@ MISSIONPACK_CFLAGS=-DMISSIONPACK
 endif
 
 ifndef COPYDIR
-COPYDIR="/usr/local/games/quake3"
+COPYDIR="/usr/local/games/worldofpadman"
 endif
 
 ifndef COPYBINDIR
@@ -264,6 +264,7 @@ VORBISDIR=$(MOUNT_DIR)/libvorbis-1.3.6
 OPUSDIR=$(MOUNT_DIR)/opus-1.2.1
 OPUSFILEDIR=$(MOUNT_DIR)/opusfile-0.9
 ZDIR=$(MOUNT_DIR)/zlib
+TOOLSDIR=$(MOUNT_DIR)/tools
 Q3ASMDIR=$(MOUNT_DIR)/tools/asm
 LBURGDIR=$(MOUNT_DIR)/tools/lcc/lburg
 Q3CPPDIR=$(MOUNT_DIR)/tools/lcc/cpp
@@ -633,7 +634,19 @@ ifdef MINGW
 
   ifeq ($(COMPILE_PLATFORM),cygwin)
     TOOLS_BINEXT=.exe
-    TOOLS_CC=$(CC)
+
+    # Under cygwin the default of using gcc for TOOLS_CC won't work, so
+    # we need to figure out the appropriate compiler to use, based on the
+    # host architecture that we're running under (as tools run on the host)
+    ifeq ($(COMPILE_ARCH),x86_64)
+      TOOLS_MINGW_PREFIXES=x86_64-w64-mingw32 amd64-mingw32msvc
+    endif
+    ifeq ($(COMPILE_ARCH),x86)
+      TOOLS_MINGW_PREFIXES=i686-w64-mingw32 i586-mingw32msvc i686-pc-mingw32
+    endif
+
+    TOOLS_CC=$(firstword $(strip $(foreach TOOLS_MINGW_PREFIX, $(TOOLS_MINGW_PREFIXES), \
+      $(call bin_path, $(TOOLS_MINGW_PREFIX)-gcc))))
   endif
 
   LIBS= -lws2_32 -lwinmm -lpsapi
@@ -1183,6 +1196,8 @@ endif
 # https://reproducible-builds.org/specs/source-date-epoch/
 ifdef SOURCE_DATE_EPOCH
   BASE_CFLAGS += -DPRODUCT_DATE=\\\"$(shell date --date="@$$SOURCE_DATE_EPOCH" "+%b %_d %Y" | sed -e 's/ /\\\ /'g)\\\"
+else
+  BASE_CFLAGS += -DPRODUCT_DATE=\\\"\\\"
 endif
 
 BASE_CFLAGS += -DPRODUCT_VERSION=\\\"$(VERSION)\\\"
@@ -1222,9 +1237,7 @@ endef
 define DO_REF_STR
 $(echo_cmd) "REF_STR $<"
 $(Q)rm -f $@
-$(Q)echo "const char *fallbackShader_$(notdir $(basename $<)) =" >> $@
-$(Q)cat $< | sed -e 's/^/\"/;s/$$/\\n\"/' | tr -d '\r' >> $@
-$(Q)echo ";" >> $@
+$(Q)$(STRINGIFY) $< $@
 endef
 
 define DO_BOT_CC
@@ -1385,6 +1398,9 @@ endif
 	@echo "  SERVER_CFLAGS:"
 	$(call print_wrapped, $(SERVER_CFLAGS))
 	@echo ""
+	@echo "  TOOLS_CFLAGS:"
+	$(call print_wrapped, $(TOOLS_CFLAGS))
+	@echo ""
 	@echo "  LDFLAGS:"
 	$(call print_wrapped, $(LDFLAGS))
 	@echo ""
@@ -1490,6 +1506,7 @@ Q3RCC       = $(B)/tools/q3rcc$(TOOLS_BINEXT)
 Q3CPP       = $(B)/tools/q3cpp$(TOOLS_BINEXT)
 Q3LCC       = $(B)/tools/q3lcc$(TOOLS_BINEXT)
 Q3ASM       = $(B)/tools/q3asm$(TOOLS_BINEXT)
+STRINGIFY   = $(B)/tools/stringify$(TOOLS_BINEXT)
 
 LBURGOBJ= \
   $(B)/tools/lburg/lburg.o \
@@ -1583,6 +1600,10 @@ $(Q3LCC): $(Q3LCCOBJ) $(Q3RCC) $(Q3CPP)
 	$(echo_cmd) "LD $@"
 	$(Q)$(TOOLS_CC) $(TOOLS_CFLAGS) $(TOOLS_LDFLAGS) -o $@ $(Q3LCCOBJ) $(TOOLS_LIBS)
 
+$(STRINGIFY): $(TOOLSDIR)/stringify.c
+	$(echo_cmd) "TOOLS_CC $@"
+	$(Q)$(TOOLS_CC) $(TOOLS_CFLAGS) $(TOOLS_LDFLAGS) -o $@ $(TOOLSDIR)/stringify.c $(TOOLS_LIBS)
+
 define DO_Q3LCC
 $(echo_cmd) "Q3LCC $<"
 $(Q)$(Q3LCC) $(BASEGAME_CFLAGS) -o $@ $<
@@ -1663,6 +1684,7 @@ $(B)/$(AUTOUPDATER_BIN): $(Q3AUTOUPDATEROBJ)
 Q3OBJ = \
   $(B)/client/cl_cgame.o \
   $(B)/client/cl_cin.o \
+  $(B)/client/cin_ogm.o \
   $(B)/client/cl_console.o \
   $(B)/client/cl_input.o \
   $(B)/client/cl_keys.o \
@@ -2370,23 +2392,30 @@ Q3CGOBJ_ = \
   $(B)/$(BASEGAME)/cgame/bg_slidemove.o \
   $(B)/$(BASEGAME)/cgame/bg_lib.o \
   $(B)/$(BASEGAME)/cgame/cg_consolecmds.o \
+  $(B)/$(BASEGAME)/cgame/cg_cutscene2d.o \
   $(B)/$(BASEGAME)/cgame/cg_draw.o \
   $(B)/$(BASEGAME)/cgame/cg_drawtools.o \
   $(B)/$(BASEGAME)/cgame/cg_effects.o \
   $(B)/$(BASEGAME)/cgame/cg_ents.o \
   $(B)/$(BASEGAME)/cgame/cg_event.o \
   $(B)/$(BASEGAME)/cgame/cg_info.o \
+  $(B)/$(BASEGAME)/cgame/cg_lensflare.o \
   $(B)/$(BASEGAME)/cgame/cg_localents.o \
   $(B)/$(BASEGAME)/cgame/cg_marks.o \
+  $(B)/$(BASEGAME)/cgame/cg_misc.o \
   $(B)/$(BASEGAME)/cgame/cg_particles.o \
   $(B)/$(BASEGAME)/cgame/cg_players.o \
   $(B)/$(BASEGAME)/cgame/cg_playerstate.o \
   $(B)/$(BASEGAME)/cgame/cg_predict.o \
+  $(B)/$(BASEGAME)/cgame/cg_rautelib.o \
   $(B)/$(BASEGAME)/cgame/cg_scoreboard.o \
   $(B)/$(BASEGAME)/cgame/cg_servercmds.o \
   $(B)/$(BASEGAME)/cgame/cg_snapshot.o \
+  $(B)/$(BASEGAME)/cgame/cg_spraylogo.o \
+  $(B)/$(BASEGAME)/cgame/cg_spriteparticles.o \
   $(B)/$(BASEGAME)/cgame/cg_view.o \
   $(B)/$(BASEGAME)/cgame/cg_weapons.o \
+  $(B)/$(BASEGAME)/cgame/wopc_advanced2d.o \
   \
   $(B)/$(BASEGAME)/qcommon/q_math.o \
   $(B)/$(BASEGAME)/qcommon/q_shared.o
@@ -2472,19 +2501,25 @@ Q3GOBJ_ = \
   $(B)/$(BASEGAME)/game/g_client.o \
   $(B)/$(BASEGAME)/game/g_cmds.o \
   $(B)/$(BASEGAME)/game/g_combat.o \
+  $(B)/$(BASEGAME)/game/g_ctlitems.o \
+  $(B)/$(BASEGAME)/game/g_gameinfo.o \
   $(B)/$(BASEGAME)/game/g_items.o \
   $(B)/$(BASEGAME)/game/g_mem.o \
   $(B)/$(BASEGAME)/game/g_misc.o \
   $(B)/$(BASEGAME)/game/g_missile.o \
+  $(B)/$(BASEGAME)/game/g_modifiers.o \
   $(B)/$(BASEGAME)/game/g_mover.o \
   $(B)/$(BASEGAME)/game/g_session.o \
   $(B)/$(BASEGAME)/game/g_spawn.o \
+  $(B)/$(BASEGAME)/game/g_stations.o \
   $(B)/$(BASEGAME)/game/g_svcmds.o \
   $(B)/$(BASEGAME)/game/g_target.o \
   $(B)/$(BASEGAME)/game/g_team.o \
   $(B)/$(BASEGAME)/game/g_trigger.o \
   $(B)/$(BASEGAME)/game/g_utils.o \
   $(B)/$(BASEGAME)/game/g_weapon.o \
+  $(B)/$(BASEGAME)/game/wopg_sphandling.o \
+  $(B)/$(BASEGAME)/game/wopg_spstoryfiles.o \
   \
   $(B)/$(BASEGAME)/qcommon/q_math.o \
   $(B)/$(BASEGAME)/qcommon/q_shared.o
@@ -2564,6 +2599,7 @@ Q3UIOBJ_ = \
   $(B)/$(BASEGAME)/ui/ui_addbots.o \
   $(B)/$(BASEGAME)/ui/ui_atoms.o \
   $(B)/$(BASEGAME)/ui/ui_cdkey.o \
+  $(B)/$(BASEGAME)/ui/ui_callvote.o \
   $(B)/$(BASEGAME)/ui/ui_cinematics.o \
   $(B)/$(BASEGAME)/ui/ui_confirm.o \
   $(B)/$(BASEGAME)/ui/ui_connect.o \
@@ -2571,12 +2607,16 @@ Q3UIOBJ_ = \
   $(B)/$(BASEGAME)/ui/ui_credits.o \
   $(B)/$(BASEGAME)/ui/ui_demo2.o \
   $(B)/$(BASEGAME)/ui/ui_display.o \
+  $(B)/$(BASEGAME)/ui/ui_exit.o \
   $(B)/$(BASEGAME)/ui/ui_gameinfo.o \
+  $(B)/$(BASEGAME)/ui/ui_help.o \
   $(B)/$(BASEGAME)/ui/ui_ingame.o \
   $(B)/$(BASEGAME)/ui/ui_loadconfig.o \
+  $(B)/$(BASEGAME)/ui/ui_mediaview.o \
   $(B)/$(BASEGAME)/ui/ui_menu.o \
   $(B)/$(BASEGAME)/ui/ui_mfield.o \
   $(B)/$(BASEGAME)/ui/ui_mods.o \
+  $(B)/$(BASEGAME)/ui/ui_music.o \
   $(B)/$(BASEGAME)/ui/ui_network.o \
   $(B)/$(BASEGAME)/ui/ui_options.o \
   $(B)/$(BASEGAME)/ui/ui_playermodel.o \
@@ -2599,6 +2639,11 @@ Q3UIOBJ_ = \
   $(B)/$(BASEGAME)/ui/ui_team.o \
   $(B)/$(BASEGAME)/ui/ui_teamorders.o \
   $(B)/$(BASEGAME)/ui/ui_video.o \
+  $(B)/$(BASEGAME)/ui/ui_voicechat.o \
+  $(B)/$(BASEGAME)/ui/ui_wopsp.o \
+  $(B)/$(BASEGAME)/ui/wopc_advanced2d.o \
+  $(B)/$(BASEGAME)/ui/wopg_sphandling.o \
+  $(B)/$(BASEGAME)/ui/wopg_spstoryfiles.o \
   \
   $(B)/$(BASEGAME)/qcommon/q_math.o \
   $(B)/$(BASEGAME)/qcommon/q_shared.o
@@ -2725,7 +2770,7 @@ $(B)/renderergl1/%.o: $(RGL1DIR)/%.c
 $(B)/renderergl1/tr_altivec.o: $(RGL1DIR)/tr_altivec.c
 	$(DO_REF_CC_ALTIVEC)
 
-$(B)/renderergl2/glsl/%.c: $(RGL2DIR)/glsl/%.glsl
+$(B)/renderergl2/glsl/%.c: $(RGL2DIR)/glsl/%.glsl $(STRINGIFY)
 	$(DO_REF_STR)
 
 $(B)/renderergl2/glsl/%.o: $(B)/renderergl2/glsl/%.c
@@ -2818,14 +2863,25 @@ $(B)/$(MISSIONPACK)/game/%.o: $(GDIR)/%.c
 $(B)/$(MISSIONPACK)/game/%.asm: $(GDIR)/%.c $(Q3LCC)
 	$(DO_GAME_Q3LCC_MISSIONPACK)
 
-
 $(B)/$(BASEGAME)/ui/bg_%.o: $(GDIR)/bg_%.c
+	$(DO_UI_CC)
+
+$(B)/$(BASEGAME)/ui/wopg_%.o: $(GDIR)/wopg_%.c
+	$(DO_UI_CC)
+	
+$(B)/$(BASEGAME)/ui/wopc_%.o: $(CGDIR)/wopc_%.c
 	$(DO_UI_CC)
 
 $(B)/$(BASEGAME)/ui/%.o: $(Q3UIDIR)/%.c
 	$(DO_UI_CC)
 
 $(B)/$(BASEGAME)/ui/bg_%.asm: $(GDIR)/bg_%.c $(Q3LCC)
+	$(DO_UI_Q3LCC)
+
+$(B)/$(BASEGAME)/ui/wopg_%.asm: $(GDIR)/wopg_%.c $(Q3LCC)
+	$(DO_UI_Q3LCC)
+
+$(B)/$(BASEGAME)/ui/wopc_%.asm: $(CGDIR)/wopc_%.c $(Q3LCC)
 	$(DO_UI_Q3LCC)
 
 $(B)/$(BASEGAME)/ui/%.asm: $(Q3UIDIR)/%.c $(Q3LCC)
@@ -2950,7 +3006,7 @@ toolsclean2:
 	@echo "TOOLS_CLEAN $(B)"
 	@rm -f $(TOOLSOBJ)
 	@rm -f $(TOOLSOBJ_D_FILES)
-	@rm -f $(LBURG) $(DAGCHECK_C) $(Q3RCC) $(Q3CPP) $(Q3LCC) $(Q3ASM)
+	@rm -f $(LBURG) $(DAGCHECK_C) $(Q3RCC) $(Q3CPP) $(Q3LCC) $(Q3ASM) $(STRINGIFY)
 
 distclean: clean toolsclean
 	@rm -rf $(BUILD_DIR)
