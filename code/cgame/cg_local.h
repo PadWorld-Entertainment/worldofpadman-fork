@@ -95,8 +95,8 @@ enum {
 	FORCEMODEL_TEAM		= 2
 };
 
-#define DEFAULT_REDTEAM_NAME		"Stroggs"
-#define DEFAULT_BLUETEAM_NAME		"Pagans"
+#define DEFAULT_REDTEAM_NAME		"RedPads"
+#define DEFAULT_BLUETEAM_NAME		"BlueNoses"
 
 typedef enum {
 	FOOTSTEP_NORMAL,
