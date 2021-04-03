@@ -52,8 +52,8 @@ extern int demo_protocols[];
 //  #define STEAMPATH_APPID              ""
 //  #define GOGPATH_ID                   ""
   #define GAMENAME_FOR_MASTER          "WorldofPadman"
-//  #define CINEMATICS_LOGO              ""
-//  #define CINEMATICS_INTRO             ""
+  #define CINEMATICS_LOGO		"idlogo.ogm"
+  #define CINEMATICS_INTRO		"intro.ogm"
 //  #define LEGACY_PROTOCOL
 #else
   #define PRODUCT_NAME                 "ioq3"
