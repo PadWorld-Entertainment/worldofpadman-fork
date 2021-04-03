@@ -258,7 +258,7 @@ PROTOCOL
 // 1.31 - 67
 
 #if !defined UPDATE_SERVER_NAME && !defined STANDALONE
-#define	UPDATE_SERVER_NAME	"update.quake3arena.com"
+#define	UPDATE_SERVER_NAME	"" // update.quake3arena.com
 #endif
 // override on command line, config files etc.
 #ifndef MASTER_SERVER_NAME
