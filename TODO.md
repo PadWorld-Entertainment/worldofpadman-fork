@@ -1,0 +1,4 @@
+- drastically reduce initial sound volume
+- remove superfluos cdkey menu code `ui_cdkey.c`
+- remove leftover singleplayer files `ui_wopsp.c` etc. (or use them...)
+- can we somehow minimize/split the screen-resolution popup? it's a mess! (`ui_video.c`)
