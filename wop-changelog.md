@@ -1,6 +1,6 @@
 # World of Padman Changelog
 
-## VERSION: 1.7-dev
+## VERSION: 1.6.1
 
 ioq3-master https://github.com/ioquake/ioq3/commit/05180e32dcfb9a4552e1b9652b56127248a9950c
 
@@ -11,6 +11,9 @@ ioq3-master https://github.com/ioquake/ioq3/commit/05180e32dcfb9a4552e1b9652b561
 	- changed home path name to "WorldOfPadman" for consistency with gamename and to avoid possible collisions (yes, there are more apps called "Padman")
 	- new icon for the Windows binaries, made from the WoP SVG icon, also an iconset
 	- ioquake 3 version 1.36 Git, 2020-12-26
+- FIXED
+	- demo_protocols include current PROTOCOL_VERSION 71 now to make demo ui work
+	- drop shadow distance for the engine to improve the readability of text
 
 ## Dec 17 2011 - VERSION: 1.6
 
