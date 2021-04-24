@@ -39,7 +39,7 @@ typedef struct {
 
 	qhandle_t		img;
 	float			width, height, x, y;
-	
+
 	menubitmap_s	prev;
 	menubitmap_s	next;
 } helpMenuInfo_t;
@@ -61,7 +61,6 @@ static const char *HELP_GAMETYPE[] = {
 	"help_bb",
 	"help_unknown" // must be the last entry!
 };
-static const unsigned int NUM_HELP_GAMETYPE = ( sizeof( HELP_GAMETYPE ) / sizeof( HELP_GAMETYPE[0] ) );
 // Must contain an entry for each gametype_t
 // Maps gametypes to array indices of HELP_GAMETYPE
 static const int GAMETYPE_REMAP[] = {
@@ -76,7 +75,7 @@ static const int GAMETYPE_REMAP[] = {
 	6,	// GT_BALLOON
 	7,	// GT_MAX_GAME_TYPE, invalid thus no help
 };
-	
+
 static const char *HELP_ITEM[] = {
 	"help_powerups",
 	"help_weapons"
@@ -165,7 +164,7 @@ static sfxHandle_t UI_HelpMenu_Key( int key ) {
 		case 'h':
 			UI_PopMenu();
 			return 0;
-		
+
 		default:
 			break;
 	}
@@ -220,7 +219,7 @@ static void UI_HelpMenu_SetTopic( void ) {
 			if ( ( gametype < 0 ) || ( gametype > GT_MAX_GAME_TYPE ) ) {
 				gametype = GT_MAX_GAME_TYPE;
 			}
-			
+
 			helpIndex	= GAMETYPE_REMAP[gametype];
 			helpMin		= helpIndex;
 			helpMax		= helpIndex;

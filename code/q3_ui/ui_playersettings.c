@@ -301,7 +301,7 @@ static void PlayerSettings_DrawPlayer( void *self ) {
 
 	//YEW=1=right/left
 //	s_playersettings.playerinfo.viewAngles[YAW] =
-//	s_playersettings.playerinfo.legs.yawAngle = 
+//	s_playersettings.playerinfo.legs.yawAngle =
 //	s_playersettings.playerinfo.torso.yawAngle = uis.realtime;
 
 	UI_DrawPlayer( b->generic.x, b->generic.y, b->width, b->height, &s_playersettings.playerinfo, uis.realtime/2 );
@@ -388,7 +388,7 @@ static void PlayerSettings_SetMenuItems( void ) {
 
 	// model/skin
 	memset( &s_playersettings.playerinfo, 0, sizeof(playerInfo_t) );
-	
+
 	viewangles[YAW]   = 180 - 30;
 	viewangles[PITCH] = 0;
 	viewangles[ROLL]  = 0;
@@ -556,7 +556,7 @@ static void PlayerSettings_BuildList( void )
 	for (i=0; i<numdirs && ps_playericons.nummodel < MAX_UIMODELS; i++,dirptr+=dirlen+1) {
 
 		dirlen = strlen(dirptr);
-		
+
 		if (dirlen && dirptr[dirlen-1]=='/') dirptr[dirlen-1]='\0';
 
 		if (!strcmp(dirptr,".") || !strcmp(dirptr,"..") || *dirptr=='\0')
@@ -620,7 +620,7 @@ static char modelname[32];
 		if(trap_Key_IsDown(K_MOUSE1))
 		{
 			s_playersettings.playerinfo.viewAngles[YAW] =
-			s_playersettings.playerinfo.legs.yawAngle = 
+			s_playersettings.playerinfo.legs.yawAngle =
 			(s_playersettings.playerinfo.torso.yawAngle += uis.cursorx-s_playersettings.lastCursorX);
 
 			s_playersettings.lastCursorX=uis.cursorx;
@@ -753,9 +753,10 @@ static void PlayerSettings_MenuEvent( void* ptr, int event ) {
 		trap_Cvar_Set( "team_headmodel", ps_playericons.modelskins[tmpid - ID_SICON + s_playersettings.firstskin].name );
 		break;
 	case ID_PLAYERMODEL:
-		if(trap_Key_IsDown(K_MOUSE1))
+		if(trap_Key_IsDown(K_MOUSE1)) {
 			s_playersettings.modelhold=qtrue;
-			s_playersettings.lastCursorX=uis.cursorx;
+		}
+		s_playersettings.lastCursorX=uis.cursorx;
 		break;
 	case ID_SPRAYCOLOR:
 //		Com_Printf("Spraycolor=%i\n",(uis.cursorx-((menucommon_s*)ptr)->x)/14);
@@ -881,7 +882,7 @@ static void PlayerSettings_MenuInit( void ) {
 		s_playersettings.model_icons[i].generic.type	= MTYPE_BITMAP1024S;
 		s_playersettings.model_icons[i].x				= 160+i*(160+20);
 		s_playersettings.model_icons[i].y				= 16;
-		s_playersettings.model_icons[i].w				= 
+		s_playersettings.model_icons[i].w				=
 		s_playersettings.model_icons[i].h				= 160;
 		s_playersettings.model_icons[i].shader			= 0;
 		s_playersettings.model_icons[i].mouseovershader	= 0;
@@ -895,11 +896,11 @@ static void PlayerSettings_MenuInit( void ) {
 	s_playersettings.skin_icons[0].generic.type		= MTYPE_BITMAP1024S;
 	s_playersettings.skin_icons[0].x				= 867;
 	s_playersettings.skin_icons[0].y				= 253;
-	s_playersettings.skin_icons[0].w				= 
+	s_playersettings.skin_icons[0].w				=
 	s_playersettings.skin_icons[0].h				= 128;
 	s_playersettings.skin_icons[0].sx				= 866;
 	s_playersettings.skin_icons[0].sy				= 253;
-	s_playersettings.skin_icons[0].sw				= 
+	s_playersettings.skin_icons[0].sw				=
 	s_playersettings.skin_icons[0].sh				= 138;
 	s_playersettings.skin_icons[0].shader			= 0;
 	s_playersettings.skin_icons[0].shadowshader		= trap_R_RegisterShaderNoMip("menu/player/sicon_shadow");
@@ -909,11 +910,11 @@ static void PlayerSettings_MenuInit( void ) {
 	s_playersettings.skin_icons[1].generic.type		= MTYPE_BITMAP1024S;
 	s_playersettings.skin_icons[1].x				= 867;
 	s_playersettings.skin_icons[1].y				= 396;
-	s_playersettings.skin_icons[1].w				= 
+	s_playersettings.skin_icons[1].w				=
 	s_playersettings.skin_icons[1].h				= 128;
 	s_playersettings.skin_icons[1].sx				= 866;
 	s_playersettings.skin_icons[1].sy				= 395;
-	s_playersettings.skin_icons[1].sw				= 
+	s_playersettings.skin_icons[1].sw				=
 	s_playersettings.skin_icons[1].sh				= 138;
 	s_playersettings.skin_icons[1].shader			= 0;
 	s_playersettings.skin_icons[1].shadowshader		= trap_R_RegisterShaderNoMip("menu/player/sicon_shadow");
@@ -923,11 +924,11 @@ static void PlayerSettings_MenuInit( void ) {
 	s_playersettings.skin_icons[2].generic.type		= MTYPE_BITMAP1024S;
 	s_playersettings.skin_icons[2].x				= 867;
 	s_playersettings.skin_icons[2].y				= 540;
-	s_playersettings.skin_icons[2].w				= 
+	s_playersettings.skin_icons[2].w				=
 	s_playersettings.skin_icons[2].h				= 128;
 	s_playersettings.skin_icons[2].sx				= 866;
 	s_playersettings.skin_icons[2].sy				= 539;
-	s_playersettings.skin_icons[2].sw				= 
+	s_playersettings.skin_icons[2].sw				=
 	s_playersettings.skin_icons[2].sh				= 138;
 	s_playersettings.skin_icons[2].shader			= 0;
 	s_playersettings.skin_icons[2].shadowshader		= trap_R_RegisterShaderNoMip("menu/player/sicon_shadow");

@@ -475,11 +475,9 @@ UI_CallVoteMenu_Init
 static void UI_CallVoteMenu_Init( void ) {
 	int		n;
 	int		y;
-	int		gametype;
 	char	info[MAX_INFO_STRING];
 
 	trap_GetConfigString( CS_SERVERINFO, info, sizeof( info ) );
-	gametype = atoi( Info_ValueForKey( info, "g_gametype" ) );
 
 	memset( &s_callVoteMenu, 0 ,sizeof( s_callVoteMenu ) );
 	s_callVoteMenu.menu.draw		= UI_CallVote_Draw;

@@ -111,10 +111,6 @@ UI_DemosMenu_Key
 =================
 */
 static sfxHandle_t UI_DemosMenu_Key( int key ) {
-	menucommon_s	*item;
-
-	item = Menu_ItemAtCursor( &s_demos.menu );
-
 	return Menu_DefaultKey( &s_demos.menu, key );
 }
 
@@ -137,7 +133,7 @@ Demos_MenuInit
 */
 static void Demos_MenuInit( void ) {
 	int		i,j;
-	int		len, extlen;
+	int		len;
 	char	*demoname, extension[32];
 
 	memset( &s_demos, 0 ,sizeof(demos_t) );
@@ -202,8 +198,8 @@ static void Demos_MenuInit( void ) {
 	s_demos.list.columns			= 1;
 
 	demoname = s_demos.names;
-	s_demos.list.itemnames = (const char **)s_demos.demolist;	
-	
+	s_demos.list.itemnames = (const char **)s_demos.demolist;
+
 	j=0;
 	while( demo_protocols[j] )
 	{
@@ -212,16 +208,16 @@ static void Demos_MenuInit( void ) {
 		demosToAdd = trap_FS_GetFileList("demos", extension, demoname, ARRAY_LEN(s_demos.names) - (demoname - s_demos.names) );
 
 		for(i=0; i < demosToAdd; i++)
-		{		
-			s_demos.list.itemnames[ s_demos.list.numitems++ ] = demoname;		
-		
+		{
+			s_demos.list.itemnames[ s_demos.list.numitems++ ] = demoname;
+
 			len = strlen(demoname);
 			demoname += len + 1;
 
 			if( s_demos.list.numitems >= MAX_DEMOS )
 				break;
 		}
-		
+
 		if( s_demos.list.numitems >= MAX_DEMOS )
 			break;
 		j++;
