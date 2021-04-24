@@ -615,10 +615,20 @@ void Frame_yuv_to_rgb24( const unsigned char* y, const unsigned char* u, const u
 			r = (YY + ROQ_VR_tab[v[uvI]]) >> 6;
 			g = (YY + ROQ_UG_tab[u[uvI]] + ROQ_VG_tab[v[uvI]]) >> 6;
 			b = (YY + ROQ_UB_tab[u[uvI]]) >> 6;
-			
-			if (r<0) r = 0; if (g<0) g = 0; if (b<0) b = 0;
-			if (r > 255) r = 255; if (g > 255) g = 255; if (b > 255) b = 255;
-			
+
+			if (r < 0)
+				r = 0;
+			if (g < 0)
+				g = 0;
+			if (b < 0)
+				b = 0;
+			if (r > 255)
+				r = 255;
+			if (g > 255)
+				g = 255;
+			if (b > 255)
+				b = 255;
+
 			*output = LittleLong ((r)|(g<<8)|(b<<16)|(255<<24));
 			++output;
 		}
