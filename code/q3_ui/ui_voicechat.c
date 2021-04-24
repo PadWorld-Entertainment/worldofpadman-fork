@@ -38,7 +38,7 @@ typedef struct {
 	int				numDisplayed;		// how many of the display slots do we use atm
 	int				baseClientNum;		// list index of the first client we show
 	int				selectedClientNum;	// list index of the selected client
-	
+
 	int				numClients;			// how many clients are in the list
 	char			clientNames[MAX_CLIENTS][NAME_MAXLENGTH];
 	char			clientIDs[MAX_CLIENTS];
@@ -46,7 +46,7 @@ typedef struct {
 
 static voiceChatMenuInfo_t	voiceChatMenuInfo;
 
-static const char* sendTarget_names[] = 
+static const char* sendTarget_names[] =
 {
 	"all",
 	"team",
@@ -66,7 +66,7 @@ static void UI_VoiceChatMenu_SetClientNames( void )
 
 
 	if(!voiceChatMenuInfo.numClients) return;
-	
+
 	if( voiceChatMenuInfo.baseClientNum >= voiceChatMenuInfo.numClients )
 		voiceChatMenuInfo.baseClientNum = voiceChatMenuInfo.numClients-1;
 
@@ -177,7 +177,7 @@ static void UI_VoiceChatMenu_GainSliderEvent( void* ptr, int event ) {
 
 static void UI_VoiceChatMenu_MuteEvent( void* ptr, int event ) {
 	int clID = voiceChatMenuInfo.clientIDs[ voiceChatMenuInfo.baseClientNum + voiceChatMenuInfo.selectedClientNum ];
-	
+
 	if (event != QM_ACTIVATED)
 		return;
 
@@ -212,7 +212,6 @@ static void UI_VoiceChatMenu_InitClients( void )
 {
 	int i;
 	char* name;
-	char* skill;
 	int index;
 	char info[MAX_INFO_STRING];
 	char localClientName[32];	// used to identify the local client.. there has to be a better way
@@ -222,17 +221,13 @@ static void UI_VoiceChatMenu_InitClients( void )
 
 	for( i = 0; i < MAX_CLIENTS; ++i ){
 		trap_GetConfigString( CS_PLAYERS + i, info, sizeof(info) );
-		
+
 		name = Info_ValueForKey(info, "n");
 		if( !strlen(name) )
 			continue;
 
 		if( Q_stricmpn(name, localClientName,32) == 0 )
 			continue;
-
-		skill = Info_ValueForKey(info, "skill");	// only bots have this key set
-		//if( strlen(skill) )
-		//	continue;
 
 		// it' a client, add it
 		index = voiceChatMenuInfo.numClients++;
@@ -322,7 +317,7 @@ static void UI_VoiceChatMenu_Init( void ) {
 	voiceChatMenuInfo.muteAll.generic.flags	= QMF_BLUESTYLE|QMF_SMALLFONT;
 	voiceChatMenuInfo.muteAll.generic.callback	= UI_VoiceChatMenu_MuteAllEvent;
 	voiceChatMenuInfo.muteAll.generic.x		= 315;
-	voiceChatMenuInfo.muteAll.generic.y		= y;	
+	voiceChatMenuInfo.muteAll.generic.y		= y;
 	voiceChatMenuInfo.muteAll.curvalue		= (trap_GetVoiceMuteAll() != 0);
 
 	y += SMALLCHAR_HEIGHT+2;
@@ -333,13 +328,13 @@ static void UI_VoiceChatMenu_Init( void ) {
 	voiceChatMenuInfo.sendTarget.generic.x			= 315;
 	voiceChatMenuInfo.sendTarget.generic.y			= y;
 	voiceChatMenuInfo.sendTarget.itemnames			= sendTarget_names;
-	
-	trap_Cvar_VariableStringBuffer("cl_voipSendTarget", sendTargetValue, sizeof(sendTargetValue) ); 
+
+	trap_Cvar_VariableStringBuffer("cl_voipSendTarget", sendTargetValue, sizeof(sendTargetValue) );
 	i=0;
 	while( voiceChatMenuInfo.sendTarget.itemnames[i] != 0 )
 	{
 		const char* item = voiceChatMenuInfo.sendTarget.itemnames[i];
-		
+
 		// sendtargetvalue can have extra data after the keyword
 		if( !Q_stricmpn( sendTargetValue, item, strlen(item) ) )
 		{
