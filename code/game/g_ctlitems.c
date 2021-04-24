@@ -126,7 +126,7 @@ qboolean IsBambamBoomieSpotClean( vec3_t spot, gentity_t *pEnt, char* pickupName
 				return qfalse;
 			}
 		}
-		else if( otherEnt->s.eType == ET_ITEM && 
+		else if( otherEnt->s.eType == ET_ITEM &&
 			( otherEnt->item->giTag == PW_REDFLAG || otherEnt->item->giTag == PW_BLUEFLAG ) )
 		{
 			float distSqr = DistanceSquared( otherEnt->s.pos.trBase, spot );
@@ -134,7 +134,7 @@ qboolean IsBambamBoomieSpotClean( vec3_t spot, gentity_t *pEnt, char* pickupName
 			{
 				trap_SendServerCommand( ( pEnt - g_entities ), va( "cp \"Too close to lolly base\"" ) );
 				return qfalse;
-			}			
+			}
 		}
 		else if( otherEnt->s.eType == ET_PUSH_TRIGGER )
 		{
@@ -144,7 +144,7 @@ qboolean IsBambamBoomieSpotClean( vec3_t spot, gentity_t *pEnt, char* pickupName
 
 			VectorAdd( otherEnt->r.mins, otherEnt->r.maxs, origin);
 			VectorScale(origin, 0.5, origin);
-			distSqr = DistanceSquared( origin, spot  ); 
+			distSqr = DistanceSquared( origin, spot  );
 			if( distSqr < Square(128) )
 			{
 				trap_SendServerCommand( ( pEnt - g_entities ), va( "cp \"Too close to jump pad\"" ) );
@@ -152,14 +152,14 @@ qboolean IsBambamBoomieSpotClean( vec3_t spot, gentity_t *pEnt, char* pickupName
 			}
 		}
 		else if( !Q_stricmp( otherEnt->classname, "target_push" ) ){
-			float distSqr = DistanceSquared( otherEnt->s.pos.trBase, spot  ); 
+			float distSqr = DistanceSquared( otherEnt->s.pos.trBase, spot  );
 			if( distSqr < Square(128) )
 			{
 				trap_SendServerCommand( ( pEnt - g_entities ), va( "cp \"Too close to jump pad\"" ) );
 				return qfalse;
 			}
 		}
-		else if( !Q_stricmp( otherEnt->classname, "target_position" ) 
+		else if( !Q_stricmp( otherEnt->classname, "target_position" )
 				|| !Q_stricmp( otherEnt->classname, "misc_teleporter_dest" ) )
 		{
 			float distSqr = DistanceSquared( otherEnt->s.pos.trBase, spot );
@@ -169,7 +169,7 @@ qboolean IsBambamBoomieSpotClean( vec3_t spot, gentity_t *pEnt, char* pickupName
 				return qfalse;
 			}
 		}
-		else if ( !Q_stricmp( otherEnt->classname, "info_player_start" ) 
+		else if ( !Q_stricmp( otherEnt->classname, "info_player_start" )
 				|| !Q_stricmp( otherEnt->classname, "info_player_deathmatch" ) )
 		{
 			float distSqr = DistanceSquared( otherEnt->s.pos.trBase, spot );
@@ -218,7 +218,7 @@ static void bambam_touch( gentity_t *ent, gentity_t *other, trace_t *trace ) {
 	if(!other->client) return;
 	if(!ent->team) return;
 
-	if ( !IsItemSameTeam( ent, other ) && 
+	if ( !IsItemSameTeam( ent, other ) &&
 	     ( ent->timestamp == 0 || ( level.time - ent->timestamp ) > 100 ) ) {
 		trace_t tr;
 		vec3_t start;
@@ -243,7 +243,6 @@ static void bambam_touch( gentity_t *ent, gentity_t *other, trace_t *trace ) {
 		trap_Trace(&tr,start,NULL,NULL,end,ent - g_entities,MASK_SHOT);
 
 		if(tr.fraction == 1.0f || tr.entityNum==(other-g_entities)) {
-			gentity_t	*m;
 			vec3_t	dir;
 
 			// Wake up when inactive, don't shoot yet
@@ -263,11 +262,8 @@ static void bambam_touch( gentity_t *ent, gentity_t *other, trace_t *trace ) {
 
 			// ~hack~ to use only one VectorNormalize, it should work because the 'end' isn't that different to 'other->s.pos.trBase'
 			VectorSubtract(end,start,dir);
-//			if(VectorNormalize(dir)>0.0f) {
 			if(tmpLen>0.0f) {
 				VectorScale(dir,1/tmpLen,dir);
-				m = fire_bambamMissile( ent, start, dir, missileVelocity );
-//				m->damage /= 20; // reduce dmg for testing
 				G_AddEvent( ent, EV_GENERAL_SOUND, G_SoundIndex("sounds/items/bambam/shoot") );
 
 				ent->timestamp = level.time;
@@ -359,11 +355,6 @@ qboolean bambam_createByPlayer( gentity_t *pEnt, char* pickupName ) {
 	vec3_t tmpAngles;
 	trace_t	tr;
 
-	vec3_t boxMins = {-128, -128, -30};
-	vec3_t boxMaxs = {128, 128, 64};
-	int boxEnts[10];
-	int numBoxEnts;
-	int i;
 	gentity_t* entBam;
 
 	if( MAX_TEAM_BAMBAMS <= level.numBambams[ pEnt->client->sess.sessionTeam ] )
@@ -411,7 +402,7 @@ qboolean bambam_createByPlayer( gentity_t *pEnt, char* pickupName ) {
 	entBam = G_Spawn();
 	entBam->classname = "BamBam";
 	entBam->s.eType = ET_BAMBAM;
-	
+
 	if ( pEnt->client->sess.sessionTeam == TEAM_BLUE ) {
 		entBam->s.modelindex = G_ModelIndex( "models/weapons2/bambam/bambam_blue" );
 		entBam->team = "b";
@@ -529,7 +520,7 @@ qboolean boomies_createByPlayer( gentity_t *pEnt, char* pickupName ) {
 	VectorMA(start, 64.0f, forward, end);
 
 	trap_Trace(&tr,start,NULL,NULL,end,(pEnt - g_entities),MASK_SHOT);
-	if ( tr.allsolid || tr.startsolid ) 
+	if ( tr.allsolid || tr.startsolid )
 	{
 		trap_SendServerCommand( ( pEnt - g_entities ), va( "cp \"Can't build %s here\"", pickupName ) );	// should be item->pickup_name
 		return qfalse;

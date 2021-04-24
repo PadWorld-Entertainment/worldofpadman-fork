@@ -404,7 +404,7 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 	int			contents;
 	int			killer;
 	int			i;
-	char		*killerName, *obit;
+	char		*obit;
 
 	if ( self->client->ps.pm_type == PM_DEAD ) {
 		return;
@@ -433,19 +433,12 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 
 	if ( attacker ) {
 		killer = attacker->s.number;
-		if ( attacker->client ) {
-			killerName = attacker->client->pers.netname;
-		} else {
-			killerName = "<non-client>";
-		}
 	} else {
 		killer = ENTITYNUM_WORLD;
-		killerName = "<world>";
 	}
 
 	if ( killer < 0 || killer >= MAX_CLIENTS ) {
 		killer = ENTITYNUM_WORLD;
-		killerName = "<world>";
 	}
 
 	if ( meansOfDeath < 0 || meansOfDeath >= ARRAY_LEN( modNames ) ) {
