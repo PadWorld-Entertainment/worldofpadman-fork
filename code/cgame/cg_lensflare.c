@@ -527,9 +527,6 @@ void Init_LensFlareSys(void)
 {
 	int		i;
 	char	tmpstr[256];
-	const char	*info;
-
-	info = CG_ConfigString( CS_SERVERINFO );
 
 	memset(&flaremem,0,sizeof(flaremem));
 	memset(&lfmem,0,sizeof(lfmem));

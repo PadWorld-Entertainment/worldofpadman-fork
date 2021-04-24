@@ -84,13 +84,13 @@ void CG_SprayTrail(centity_t *cent, vec3_t start)
 	smokevel[1]*=PUFFSPEED;
 	smokevel[2]*=PUFFSPEED;
 
-	smoke = CG_SmokePuff( start, smokevel, 
-		  MAXRADIUS, 
+	smoke = CG_SmokePuff( start, smokevel,
+		  MAXRADIUS,
 		  tmpcolor[0], tmpcolor[1], tmpcolor[2], 0.33f,
 		  1000.0f*traillength/PUFFSPEED,//disappear at wall
 		  cg.time,
 		  0,
-		  0, 
+		  0,
 		  cgs.media.spraypuff );
 	// use the optimized local entity add
 	smoke->leType = LE_SPRAYTRAIL;//LE_MOVE_SCALE_FADE
@@ -107,7 +107,7 @@ void CG_RailTrail (clientInfo_t *ci, vec3_t start, vec3_t end)
 	localEntity_t *le;
 	vec3_t	delta, right;
 	int		i;
- 
+
 	// calculate correct positions for double rails
 	VectorSubtract( end, start, delta );
 	right[0] = delta[1];
@@ -202,7 +202,7 @@ static void CG_KMATrail( centity_t *ent, const weaponInfo_t *wi )
 	clientInfo_t		*cinfo;
 	entityState_t		*es;
 	//byte				colorRGBA;
-	
+
 	es = &ent->currentState;
 	cinfo = &cgs.clientinfo[ es->clientNum ];
 
@@ -213,7 +213,7 @@ static void CG_KMATrail( centity_t *ent, const weaponInfo_t *wi )
 		ent->trailLE->leType = LE_TRAIL_TRACED_RGB;
 		ent->trailLE->pos = es->pos;
 		ent->trailLE->refEntity.customShader = cgs.media.kmaTrailShader;
-		
+
 		if ( cgs.gametype >= GT_TEAM ) // team mode
 		{
 			// force team colors
@@ -236,7 +236,7 @@ static void CG_KMATrail( centity_t *ent, const weaponInfo_t *wi )
 			ent->trailLE->color[0] = cinfo->color2[0];
 			ent->trailLE->color[1] = cinfo->color2[1];
 			ent->trailLE->color[2] = cinfo->color2[2];
-			
+
 			// force a different color for "black" since black doesn't show up
 			if ( ent->trailLE->color[0] == 0.0f && ent->trailLE->color[1] == 0.0f && ent->trailLE->color[2] == 0.0f )
 			{
@@ -244,7 +244,7 @@ static void CG_KMATrail( centity_t *ent, const weaponInfo_t *wi )
 				ent->trailLE->color[1] = 0.0f;
 				ent->trailLE->color[2] = 1.0f;
 			}
-			
+
 		}
 		ent->trailLE->color[3] = 1.0f;
 		ent->trailLE->refEntity.radius = wi->trailRadius;
@@ -399,13 +399,13 @@ static void CG_GrenadeTrail( centity_t *ent, const weaponInfo_t *wi )
 		AnglesToAxis( lastAngles, trailEnt.axis );
 
 
-		smoke = CG_SmokePuff( vec3_origin, up, 
-					  wi->trailRadius, 
+		smoke = CG_SmokePuff( vec3_origin, up,
+					  wi->trailRadius,
 					  1, 1, 1, 0.33f,
-					  wi->wiTrailTime, 
+					  wi->wiTrailTime,
 					  t,
 					  0,
-					  0, 
+					  0,
 					  cgs.media.waterBubbleShader );
 
 		// "manipulate" position and speed
@@ -568,7 +568,7 @@ NOADDITIONALMODELS:
 		weaponInfo->missileDlight = 200;
 		weaponInfo->wiTrailTime = 2000;
 		weaponInfo->trailRadius = 64;
-		
+
 
 		weaponInfo->flashSound[0] = trap_S_RegisterSound( "sounds/weapons/betty/flash", qfalse );
 		cgs.media.rocketExplosionShader = trap_R_RegisterShader( "fireExplosion" );
@@ -608,7 +608,7 @@ NOADDITIONALMODELS:
 		weaponInfo->missileTrailFunc = CG_SplasherTrail;
 		weaponInfo->wiTrailTime = 2000;
 		weaponInfo->trailRadius = 16;
-		
+
 		weaponInfo->flashSound[0] = trap_S_RegisterSound( "sounds/weapons/splasher/flash", qfalse );
 		weaponInfo->readySound = trap_S_RegisterSound( "sounds/weapons/splasher/ready", qfalse );
 		cgs.media.waterTrailShader = trap_R_RegisterShader( "waterTrail" );
@@ -725,7 +725,7 @@ void CG_RegisterItemVisuals( int itemNum ) {
 	//
 	// powerups have an accompanying ring or sphere
 	//
-	if ( item->giType == IT_POWERUP || item->giType == IT_HEALTH || 
+	if ( item->giType == IT_POWERUP || item->giType == IT_HEALTH ||
 		item->giType == IT_ARMOR || item->giType == IT_HOLDABLE ) {
 		if ( item->world_model[1] ) {
 			itemInfo->models[1] = trap_R_RegisterModel( item->world_model[1] );
@@ -751,29 +751,29 @@ CG_MapTorsoToWeaponFrame
 static int CG_MapTorsoToWeaponFrame( clientInfo_t *ci, int frame ) {
 
 	// change weapon
-	if ( frame >= ci->animations[TORSO_DROP].firstFrame 
+	if ( frame >= ci->animations[TORSO_DROP].firstFrame
 		&& frame < ci->animations[TORSO_DROP].firstFrame + 9 ) {
 		return frame - ci->animations[TORSO_DROP].firstFrame + 6;
 	}
 
 	// stand attack
-	if ( frame >= ci->animations[TORSO_ATTACK].firstFrame 
+	if ( frame >= ci->animations[TORSO_ATTACK].firstFrame
 		&& frame < ci->animations[TORSO_ATTACK].firstFrame + 6 ) {
 		return 1 + frame - ci->animations[TORSO_ATTACK].firstFrame;
 	}
 
 	// stand attack 2
-	if ( frame >= ci->animations[TORSO_ATTACK2].firstFrame 
+	if ( frame >= ci->animations[TORSO_ATTACK2].firstFrame
 		&& frame < ci->animations[TORSO_ATTACK2].firstFrame + 6 ) {
 		return 1 + frame - ci->animations[TORSO_ATTACK2].firstFrame;
 	}
 
 	//sprayattack ;)
-	if( frame >= ci->animations[TORSO_SPRAYATTACK].firstFrame 
+	if( frame >= ci->animations[TORSO_SPRAYATTACK].firstFrame
 		&& frame < ci->animations[TORSO_SPRAYATTACK].firstFrame + ci->animations[TORSO_SPRAYATTACK].numFrames ) {
 		return 1 + frame - ci->animations[TORSO_SPRAYATTACK].firstFrame;
-	} 
-	
+	}
+
 	return 0;
 }
 
@@ -808,7 +808,7 @@ static void CG_CalculateWeaponPosition( vec3_t origin, vec3_t angles ) {
 	if ( delta < LAND_DEFLECT_TIME ) {
 		origin[2] += cg.landChange*0.25 * delta / LAND_DEFLECT_TIME;
 	} else if ( delta < LAND_DEFLECT_TIME + LAND_RETURN_TIME ) {
-		origin[2] += cg.landChange*0.25 * 
+		origin[2] += cg.landChange*0.25 *
 			(LAND_DEFLECT_TIME + LAND_RETURN_TIME - delta) / LAND_RETURN_TIME;
 	}
 
@@ -937,93 +937,6 @@ void CG_GetWaterMuzzle( localEntity_t *le, centity_t *cent, vec3_t fw ) {
 	muzzle[2] -= 15;
 	VectorCopy( muzzle, le->color );
 }
-
-/*
-
-static void CG_LightningBolt( centity_t *cent, vec3_t origin ) {
-	trace_t		trace;
-	refEntity_t		beam;
-	vec3_t			forward;
-	vec3_t			muzzlePoint, endPoint;
-
-	if ( cent->currentState.weapon != WP_LIGHTNING ) {
-		return;
-	}
-
-	memset( &beam, 0, sizeof( beam ) );
-
-	// find muzzle point for this frame
-	VectorCopy( cent->lerpOrigin, muzzlePoint );
-	AngleVectors( cent->lerpAngles, forward, NULL, NULL );
-
-	// FIXME: crouch
-	muzzlePoint[2] += DEFAULT_VIEWHEIGHT;
-
-	VectorMA( muzzlePoint, 14, forward, muzzlePoint );
-
-	// project forward by the lightning range
-	VectorMA( muzzlePoint, LIGHTNING_RANGE, forward, endPoint );
-
-	// see if it hit a wall
-	CG_Trace( &trace, muzzlePoint, vec3_origin, vec3_origin, endPoint, 
-		cent->currentState.number, MASK_SHOT );
-
-	// this is the endpoint
-	VectorCopy( trace.endpos, beam.oldorigin );
-
-	// use the provided origin, even though it may be slightly
-	// different than the muzzle origin
-	VectorCopy( origin, beam.origin );
-
-	beam.reType = RT_LIGHTNING;
-	beam.customShader = cgs.media.lightningShader;
-	trap_R_AddRefEntityToScene( &beam );
-
-	// add the impact flare if it hit something
-	if ( trace.fraction < 1.0 ) {
-		vec3_t	angles;
-		vec3_t	dir;
-
-		VectorSubtract( beam.oldorigin, beam.origin, dir );
-		VectorNormalize( dir );
-
-		memset( &beam, 0, sizeof( beam ) );
-		beam.hModel = cgs.media.lightningExplosionModel;
-
-		VectorMA( trace.endpos, -16, dir, beam.origin );
-
-		// make a random orientation
-		angles[0] = rand() % 360;
-		angles[1] = rand() % 360;
-		angles[2] = rand() % 360;
-		AnglesToAxis( angles, beam.axis );
-		trap_R_AddRefEntityToScene( &beam );
-	}
-}
-*/
-
-/*
-===============
-CG_SpawnRailTrail
-
-Origin will be the exact tag point, which is slightly
-different than the muzzle point used for determining hits.
-===============
-*/
-static void CG_SpawnRailTrail( centity_t *cent, vec3_t origin ) {
-	clientInfo_t	*ci;
-
-	if ( cent->currentState.weapon != WP_PUMPER ) { //damit es mit herbys code funktioniert
-		return;
-	}
-	if ( !cent->pe.railgunFlash ) {
-		return;
-	}
-	cent->pe.railgunFlash = qtrue;
-	ci = &cgs.clientinfo[ cent->currentState.clientNum ];
-	CG_RailTrail( ci, origin, cent->pe.railgunImpact );
-}
-
 
 /*
 ======================
@@ -1188,7 +1101,7 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 
 		break;
 	}
-	
+
 	cent->lastweaponframe=gun.frame;
 
 	CG_PositionEntityOnTag( &gun, parent, parent->hModel, "tag_weapon");
@@ -1225,7 +1138,7 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 
 	// add the flash
 	if ( ( weaponNum == WP_IMPERIUS || weaponNum == WP_BOASTER || weaponNum == WP_GRAPPLING_HOOK  || weaponNum == WP_SPRAYPISTOL )
-		&& ( nonPredictedCent->currentState.eFlags & EF_FIRING ) ) 
+		&& ( nonPredictedCent->currentState.eFlags & EF_FIRING ) )
 	{
 		// continuous flash
 	} else {
@@ -1245,16 +1158,16 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 	if (!flash.hModel) {
 		return;
 	}
-	
+
 	// KMA flash color
 	if ( weaponNum == WP_KMA97 )
 	{
 		clientInfo_t		*cinfo;
 		entityState_t		*es;
-		
-		es = &cent->currentState;		
+
+		es = &cent->currentState;
 		cinfo = &cgs.clientinfo[ es->clientNum ];
-		
+
 		// forced team color
 		if ( cgs.gametype >= GT_TEAM )
 		{
@@ -1263,7 +1176,7 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 				flash.shaderRGBA[0] = 0;
 				flash.shaderRGBA[1] = 0;
 				flash.shaderRGBA[2] = 255;
-				flash.shaderRGBA[3] = 255;			
+				flash.shaderRGBA[3] = 255;
 			}
 			else
 			{
@@ -1274,12 +1187,12 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 			}
 		}
 		else // ffa-type color
-		{	
+		{
 			flash.shaderRGBA[0] = cinfo->color2[0] * 255;
 			flash.shaderRGBA[1] = cinfo->color2[1] * 255;
 			flash.shaderRGBA[2] = cinfo->color2[2] * 255;
 			flash.shaderRGBA[3] = 255;
-			
+
 			// force a different color for "black" since black doesn't show up
 			if ( flash.shaderRGBA[0] == 0 && flash.shaderRGBA[1] == 0 && flash.shaderRGBA[2] == 0 )
 			{
@@ -1289,7 +1202,7 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 			}
 		}
 	}
-	
+
 	angles[YAW] = 0;
 	angles[PITCH] = 0;
 	angles[ROLL] = crandom() * 10;
@@ -1321,7 +1234,7 @@ static int ImpLoadingSoundsPlayed=0;
 				cg.imp_startloading=cg.time;
 				ImpLoadingSoundsPlayed=0;
 			}
-			
+
 			if(ImpLoadingSoundsPlayed<=11 && (cg.time-cg.imp_startloading)>=200*(1+ImpLoadingSoundsPlayed))
 			{
 				trap_S_StartLocalSound(cgs.media.imperiusloading[ImpLoadingSoundsPlayed+1],CHAN_LOCAL_SOUND);
@@ -1972,7 +1885,7 @@ void CG_MissileHitWall( int weapon, int clientNum, vec3_t origin, vec3_t dir, in
 		duration = 600;
 		isSprite = qtrue;
 		VectorSet( sprVel, 0, 0, 300 );
-		CG_GenerateParticles( cgs.media.bigDropModel, 0, origin, 16, sprVel, 120, 
+		CG_GenerateParticles( cgs.media.bigDropModel, 0, origin, 16, sprVel, 120,
 			200, 30, 0, cg.time, 500, 70, 0, 0, 0, 0, LEF_GRAVITY, 0 );
 		break;
 	case WP_BETTY:
@@ -1988,7 +1901,7 @@ void CG_MissileHitWall( int weapon, int clientNum, vec3_t origin, vec3_t dir, in
 		lightColor[1] = 0.75;
 		lightColor[2] = 0.0;
 		VectorSet( sprVel, 0, 0, 400 );
-		CG_GenerateParticles( cgs.media.fireDropModel, 0, origin, 16, sprVel, 120, 
+		CG_GenerateParticles( cgs.media.fireDropModel, 0, origin, 16, sprVel, 120,
 			250, 30, 0, cg.time, 700, 400, 0, 0, 0, 0, LEF_GRAVITY | LEF_COLLISIONS, 0 );
 		break;
 	case WP_BAMBAM_MISSILE:
@@ -1999,7 +1912,7 @@ void CG_MissileHitWall( int weapon, int clientNum, vec3_t origin, vec3_t dir, in
 		else if(colorCode == TEAM_RED)
 			shader = cgs.media.bambamImpactDropsRedShader;
 
-		CG_GenerateParticles( cgs.media.bambamImpactDrops, shader, origin, 2, vec3_origin, 120, 
+		CG_GenerateParticles( cgs.media.bambamImpactDrops, shader, origin, 2, vec3_origin, 120,
 			300, 10, 0, cg.time, 300, 200, 0, 0, 0, 0, 0, 0 );
 
 		shader = 0;
@@ -2007,7 +1920,7 @@ void CG_MissileHitWall( int weapon, int clientNum, vec3_t origin, vec3_t dir, in
 	case WP_SPLASHER:
 		mark = cgs.media.waterMarkShader;
 		radius = 8;
-		CG_GenerateParticles( cgs.media.smallDropModel, 0, origin, 2, vec3_origin, 120, 
+		CG_GenerateParticles( cgs.media.smallDropModel, 0, origin, 2, vec3_origin, 120,
 			300, 20, 0, cg.time, 300, 200, 0, 0, 0, 0, 0, 0 );
 		break;
 	case WP_BUBBLEG:
@@ -2028,7 +1941,7 @@ void CG_MissileHitWall( int weapon, int clientNum, vec3_t origin, vec3_t dir, in
 		VectorMA( origin, 16, dir, le->refEntity.origin );
 		VectorSet( le->angles.trBase, 360*crandom(), 360*crandom(), 360*crandom() );
 
-		CG_GenerateParticles( cgs.media.imperiusBeamModel, 0, origin, 16, vec3_origin, 360, 
+		CG_GenerateParticles( cgs.media.imperiusBeamModel, 0, origin, 16, vec3_origin, 360,
 			1500, 50, 0, cg.time, 700, 400, 0, 0, 0, 0, 0, 0 );
 
 		mark = cgs.media.burnMarkShader;
@@ -2065,16 +1978,16 @@ void CG_MissileHitWall( int weapon, int clientNum, vec3_t origin, vec3_t dir, in
 		lightColor[2] = 0.0f;
 
 		VectorSet( sprVel, 0, 0, 300 );
-		CG_GenerateParticles( cgs.media.duckWheelModel, 0, origin, 8, sprVel, 45, 
+		CG_GenerateParticles( cgs.media.duckWheelModel, 0, origin, 8, sprVel, 45,
 			150, 4, 0, cg.time, 3000, 500, 0, 0, 0, 0, LEF_GRAVITY | LEF_TUMBLE | LEF_COLLISIONS, 0 );
-		CG_GenerateParticles( cgs.media.duckHeadModel, 0, origin, 8, sprVel, 45, 
+		CG_GenerateParticles( cgs.media.duckHeadModel, 0, origin, 8, sprVel, 45,
 			150, 1, 0, cg.time, 3000, 500, 0, 0, 0, 0, LEF_GRAVITY | LEF_TUMBLE | LEF_COLLISIONS, 0 );
 		break;
-	
+
 	case WP_KMA97:
 		mark = cgs.media.kmaMarkShader;
 		radius = 8;
-		CG_GenerateParticles( cgs.media.smallKmaDropModel, 0, origin, 2, vec3_origin, 120, 
+		CG_GenerateParticles( cgs.media.smallKmaDropModel, 0, origin, 2, vec3_origin, 120,
 			300, 20, 0, cg.time, 300, 200, 0, 0, 0, 0, 0, 0 );
 		break;
 	}
@@ -2087,7 +2000,7 @@ void CG_MissileHitWall( int weapon, int clientNum, vec3_t origin, vec3_t dir, in
 	// create the explosion
 	//
 	if ( mod ) {
-		le = CG_MakeExplosion( origin, dir, 
+		le = CG_MakeExplosion( origin, dir,
 							   mod,	shader,
 							   duration, isSprite );
 		le->light = light;
@@ -2176,7 +2089,7 @@ void CG_ShotgunFire( entityState_t *es )
 	end[0]=start[0]+1000*forward[0];
 	end[1]=start[1]+1000*forward[1];
 	end[2]=start[2]+1000*forward[2];
-	
+
 	CG_Trace(&tr,start,NULL,NULL,end,0,MASK_SHOT);
 	end[0]=tr.endpos[0];
 	end[1]=tr.endpos[1];

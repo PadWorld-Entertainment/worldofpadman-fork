@@ -92,7 +92,7 @@ void CG_LoadingItem( int itemNum ) {
 	gitem_t		*item;
 
 	item = &bg_itemlist[itemNum];
-	
+
 	if ( item->icon && loadingItemIconCount < MAX_LOADING_ITEM_ICONS ) {
 		loadingItemIcons[loadingItemIconCount++] = trap_R_RegisterShaderNoMip( item->icon );
 	}
@@ -155,7 +155,6 @@ Draw all the status / pacifier stuff during level loading
 void CG_DrawInformation( void ) {
 	const char	*s;
 	const char	*info;
-	const char	*sysInfo;
 //	int			y;
 //	int			value;
 	qhandle_t	levelshot;
@@ -172,12 +171,11 @@ void CG_DrawInformation( void ) {
 	int lsX, lsY, lsW, lsH;		// actual levelshot coords
 
 	info = CG_ConfigString( CS_SERVERINFO );
-	sysInfo = CG_ConfigString( CS_SYSTEMINFO );
 
 	trap_R_SetColor( NULL );
 
 	CG_DrawPic( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, trap_R_RegisterShaderNoMip("loadingscreen/connecting"));
-	
+
 	s = Info_ValueForKey( info, "mapname" );
 	levelshot = trap_R_RegisterShaderNoMip( va( "levelshots/%s", s ) );
 	if ( !levelshot ) {
@@ -331,7 +329,7 @@ void CG_DrawInformation( void ) {
 	UI_DrawProportionalString( 320, y, s,
 		UI_CENTER|UI_SMALLFONT|UI_DROPSHADOW, colorWhite );
 	y += PROP_HEIGHT;
-		
+
 	value = atoi( Info_ValueForKey( info, "timelimit" ) );
 	if ( value ) {
 		UI_DrawProportionalString( 320, y, va( "timelimit %i", value ),

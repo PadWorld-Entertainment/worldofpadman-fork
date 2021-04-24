@@ -142,7 +142,7 @@ void CG_DamageFeedback( int yawByte, int pitchByte, int damage ) {
 		}
 
 		cg.v_dmg_roll = kick * left;
-		
+
 		cg.v_dmg_pitch = -kick * front;
 
 		if ( front <= 0.1 ) {
@@ -293,7 +293,7 @@ CG_CheckLocalSounds
 ==================
 */
 void CG_CheckLocalSounds( playerState_t *ps, playerState_t *ops ) {
-	int			highScore, health, armor;
+	int			highScore;
 	qboolean	reward=qfalse;
 	sfxHandle_t sfx;
 
@@ -304,8 +304,6 @@ void CG_CheckLocalSounds( playerState_t *ps, playerState_t *ops ) {
 
 	// hit changes
 	if ( ps->persistant[PERS_HITS] > ops->persistant[PERS_HITS] ) {
-		armor  = ps->persistant[PERS_ATTACKEE_ARMOR] & 0xff;
-		health = ps->persistant[PERS_ATTACKEE_ARMOR] >> 8;
 		trap_S_StartLocalSound( cgs.media.hitSound, CHAN_LOCAL_SOUND );
 	} else if ( ps->persistant[PERS_HITS] < ops->persistant[PERS_HITS] ) {
 		trap_S_StartLocalSound( cgs.media.hitTeamSound, CHAN_LOCAL_SOUND );
@@ -341,7 +339,7 @@ void CG_CheckLocalSounds( playerState_t *ps, playerState_t *ops ) {
 		pushReward(sfx, cgs.media.medalSpraykiller, ps->persistant[PERS_SPRAYAWARDS_COUNT] & 0xFF);
 		reward = qtrue;
 	}
-	
+
 	if (ps->persistant[PERS_CAPTURES] != ops->persistant[PERS_CAPTURES]) {
 		sfx = cgs.media.padstarSound;
 		pushReward(sfx, cgs.media.medalPadStar, ps->persistant[PERS_CAPTURES]);
@@ -484,7 +482,7 @@ void CG_TransitionPlayerState( playerState_t *ps, playerState_t *ops ) {
 		cg.mapRestart = qfalse;
 	}
 
-	if ( cg.snap->ps.pm_type != PM_INTERMISSION 
+	if ( cg.snap->ps.pm_type != PM_INTERMISSION
 		&& ps->persistant[PERS_TEAM] != TEAM_SPECTATOR ) {
 		CG_CheckLocalSounds( ps, ops );
 	}
