@@ -83,14 +83,13 @@ void UI_StartCreditMusic(void)
 {
 	uis.musicbool=qtrue;
 	trap_S_StopBackgroundTrack();
-//	trap_S_StartBackgroundTrack("music/green sun - yes, he comes!.ogg", "music/green sun - yes, he comes!.ogg");
-	trap_S_StartBackgroundTrack("wopmusic/greensun/09_pad-anthem (credits).ogg", "wopmusic/greensun/09_pad-anthem (credits).ogg");
+	trap_S_StartBackgroundTrack("music/credits", "music/credits");
 }
 
 void UI_StartMusic(void)
 {
 	uis.musicbool=qtrue;
-	trap_S_StartBackgroundTrack("music/22khz_menue_loop", "music/22khz_menue_loop");
+	trap_S_StartBackgroundTrack("music/menuloop", "music/menuloop");
 }
 
 void UI_StopMusic(void)
