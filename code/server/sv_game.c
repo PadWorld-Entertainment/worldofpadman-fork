@@ -645,9 +645,6 @@ intptr_t SV_GameSystemCalls(intptr_t *args) {
 	case BOTLIB_AI_MATCH_VARIABLE:
 		botlib_export->ai.BotMatchVariable(VMA(1), args[2], VMA(3), args[4]);
 		return 0;
-	case BOTLIB_AI_UNIFY_WHITE_SPACES:
-		botlib_export->ai.UnifyWhiteSpaces(VMA(1));
-		return 0;
 	case BOTLIB_AI_REPLACE_SYNONYMS:
 		botlib_export->ai.BotReplaceSynonyms(VMA(1), args[2]);
 		return 0;
@@ -832,6 +829,7 @@ intptr_t SV_GameSystemCalls(intptr_t *args) {
 	case TRAP_CEIL:
 		return FloatAsInt(ceil(VMF(1)));
 
+	case BOTLIB_AI_UNIFY_WHITE_SPACES:
 	case BOTLIB_AI_STRING_CONTAINS:
 	default:
 		Com_Error(ERR_DROP, "Bad game system trap: %ld", (long int)args[0]);

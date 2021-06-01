@@ -97,8 +97,6 @@ void BotGetChatMessage(int chatstate, char *buf, int size);
 int BotFindMatch(const char *str, bot_match_t *match, unsigned long int context);
 // returns a variable from a match
 void BotMatchVariable(bot_match_t *match, int variable, char *buf, int size);
-// unify all the white spaces in the string
-void UnifyWhiteSpaces(char *string);
 // replace all the context related synonyms in the string
 void BotReplaceSynonyms(char *string, unsigned long int context);
 // loads a chat file for the chat state

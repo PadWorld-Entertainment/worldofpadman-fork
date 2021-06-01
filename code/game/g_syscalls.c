@@ -562,10 +562,6 @@ void trap_BotMatchVariable(void /* struct bot_match_s */ *match, int variable, c
 	syscall(BOTLIB_AI_MATCH_VARIABLE, match, variable, buf, size);
 }
 
-void trap_UnifyWhiteSpaces(char *string) {
-	syscall(BOTLIB_AI_UNIFY_WHITE_SPACES, string);
-}
-
 void trap_BotReplaceSynonyms(char *string, unsigned long int context) {
 	syscall(BOTLIB_AI_REPLACE_SYNONYMS, string, context);
 }

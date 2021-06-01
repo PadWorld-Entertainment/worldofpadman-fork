@@ -348,14 +348,6 @@ int BotNumConsoleMessages(int chatstate) {
 	return cs->numconsolemessages;
 }
 
-static int IsWhiteSpace(char c) {
-	if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '(' || c == ')' ||
-		c == '?' || c == ':' || c == '\'' || c == '/' || c == ',' || c == '.' || c == '[' || c == ']' || c == '-' ||
-		c == '_' || c == '+' || c == '=')
-		return qfalse;
-	return qtrue;
-}
-
 static void BotRemoveTildes(char *message) {
 	int i;
 
@@ -364,26 +356,6 @@ static void BotRemoveTildes(char *message) {
 		if (message[i] == '~') {
 			memmove(&message[i], &message[i + 1], strlen(&message[i + 1]) + 1);
 		}
-	}
-}
-
-void UnifyWhiteSpaces(char *string) {
-	char *ptr, *oldptr;
-
-	for (ptr = oldptr = string; *ptr; oldptr = ptr) {
-		while (*ptr && IsWhiteSpace(*ptr))
-			ptr++;
-		if (ptr > oldptr) {
-			// if not at the start and not at the end of the string
-			// write only one space
-			if (oldptr > string && *ptr)
-				*oldptr++ = ' ';
-			// remove all other white spaces
-			if (ptr > oldptr)
-				memmove(oldptr, ptr, strlen(ptr) + 1);
-		}
-		while (*ptr && !IsWhiteSpace(*ptr))
-			ptr++;
 	}
 }
 

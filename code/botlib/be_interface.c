@@ -690,7 +690,6 @@ static void Init_AI_Export(ai_export_t *ai) {
 	ai->BotGetChatMessage = BotGetChatMessage;
 	ai->BotFindMatch = BotFindMatch;
 	ai->BotMatchVariable = BotMatchVariable;
-	ai->UnifyWhiteSpaces = UnifyWhiteSpaces;
 	ai->BotReplaceSynonyms = BotReplaceSynonyms;
 	ai->BotLoadChatFile = BotLoadChatFile;
 	ai->BotSetChatGender = BotSetChatGender;
