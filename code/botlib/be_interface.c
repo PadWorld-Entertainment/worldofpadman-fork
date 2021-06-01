@@ -535,7 +535,7 @@ int BotExportTest(int parm0, char *parm1, vec3_t parm2, vec3_t parm3) {
 		if (face)
 		{
 			AAS_ShowFace(face - aasworld.faces);
-		} 
+		}
 
 		AAS_DrawPlaneCross(bsptrace.endpos,
 									bsptrace.plane.normal,
@@ -546,7 +546,7 @@ int BotExportTest(int parm0, char *parm1, vec3_t parm2, vec3_t parm3) {
 			ent = &aasworld.entities[trace.ent];
 			AAS_ShowBoundingBox(ent->origin, ent->mins, ent->maxs);
 		}
-	} 
+	}
 	//bsptrace = AAS_Trace2(eye, NULL, NULL, end, 1, MASK_PLAYERSOLID);
 	bsptrace = AAS_Trace2(eye, mins, maxs, end, 1, MASK_PLAYERSOLID);
 	botimport.DebugLineShow(line[1], eye, bsptrace.endpos, LINECOLOR_BLUE);
@@ -560,7 +560,7 @@ int BotExportTest(int parm0, char *parm1, vec3_t parm2, vec3_t parm3) {
 		{
 			ent = &aasworld.entities[bsptrace.ent];
 			AAS_ShowBoundingBox(ent->origin, ent->mins, ent->maxs);
-		} 
+		}
 	}
 #endif
 #endif
@@ -688,7 +688,6 @@ static void Init_AI_Export(ai_export_t *ai) {
 	ai->BotChatLength = BotChatLength;
 	ai->BotEnterChat = BotEnterChat;
 	ai->BotGetChatMessage = BotGetChatMessage;
-	ai->StringContains = StringContains;
 	ai->BotFindMatch = BotFindMatch;
 	ai->BotMatchVariable = BotMatchVariable;
 	ai->UnifyWhiteSpaces = UnifyWhiteSpaces;

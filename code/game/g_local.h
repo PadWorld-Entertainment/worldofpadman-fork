@@ -1039,7 +1039,6 @@ int trap_BotReplyChat(int chatstate, char *message, int mcontext, int vcontext, 
 int trap_BotChatLength(int chatstate);
 void trap_BotEnterChat(int chatstate, int client, int sendto);
 void trap_BotGetChatMessage(int chatstate, char *buf, int size);
-int trap_StringContains(const char *str1, const char *str2, int casesensitive);
 int trap_BotFindMatch(const char *str, void /* struct bot_match_s */ *match, unsigned long int context);
 void trap_BotMatchVariable(void /* struct bot_match_s */ *match, int variable, char *buf, int size);
 void trap_UnifyWhiteSpaces(char *string);

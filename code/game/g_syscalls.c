@@ -554,10 +554,6 @@ void trap_BotGetChatMessage(int chatstate, char *buf, int size) {
 	syscall(BOTLIB_AI_GET_CHAT_MESSAGE, chatstate, buf, size);
 }
 
-int trap_StringContains(const char *str1, const char *str2, int casesensitive) {
-	return syscall(BOTLIB_AI_STRING_CONTAINS, str1, str2, casesensitive);
-}
-
 int trap_BotFindMatch(const char *str, void /* struct bot_match_s */ *match, unsigned long int context) {
 	return syscall(BOTLIB_AI_FIND_MATCH, str, match, context);
 }

@@ -387,7 +387,7 @@ void UnifyWhiteSpaces(char *string) {
 	}
 }
 
-int StringContains(const char *str1, const char *str2, int casesensitive) {
+static int StringContains(const char *str1, const char *str2) {
 	int len, i, j, index;
 
 	if (str1 == NULL || str2 == NULL)
@@ -397,13 +397,8 @@ int StringContains(const char *str1, const char *str2, int casesensitive) {
 	index = 0;
 	for (i = 0; i <= len; i++, str1++, index++) {
 		for (j = 0; str2[j]; j++) {
-			if (casesensitive) {
-				if (str1[j] != str2[j])
-					break;
-			} else {
-				if (toupper(str1[j]) != toupper(str2[j]))
-					break;
-			}
+			if (toupper(str1[j]) != toupper(str2[j]))
+				break;
 		}
 		if (!str2[j])
 			return index;
@@ -1164,7 +1159,7 @@ static int StringsMatch(bot_matchpiece_t *pieces, bot_match_t *match) {
 					break;
 				}
 				// Log_Write("MT_STRING: %s", mp->string);
-				index = StringContains(strptr, ms->string, qfalse);
+				index = StringContains(strptr, ms->string);
 				if (index >= 0) {
 					newstrptr = strptr + index;
 					if (lastvariable >= 0) {
@@ -1460,7 +1455,7 @@ static void BotCheckValidReplyChatKeySet(source_t *source, bot_replychatkey_t *k
 					for (m = key2->match; m; m = m->next) {
 						if (m->type == MT_STRING) {
 							for (ms = m->firststring; ms; ms = ms->next) {
-								if (StringContains(ms->string, key->string, qfalse) != -1) {
+								if (StringContains(ms->string, key->string) != -1) {
 									break;
 								}
 							}
@@ -1486,7 +1481,7 @@ static void BotCheckValidReplyChatKeySet(source_t *source, bot_replychatkey_t *k
 				if (key2->flags & RCKFL_NOT)
 					continue;
 				if (key2->flags & RCKFL_STRING) {
-					if (StringContains(key2->string, key->string, qfalse) != -1) {
+					if (StringContains(key2->string, key->string) != -1) {
 						SourceWarning(source, "the key %s with prefix ! is inside the key %s", key->string,
 									  key2->string);
 					}
@@ -1494,7 +1489,7 @@ static void BotCheckValidReplyChatKeySet(source_t *source, bot_replychatkey_t *k
 					for (m = key2->match; m; m = m->next) {
 						if (m->type == MT_STRING) {
 							for (ms = m->firststring; ms; ms = ms->next) {
-								if (StringContains(ms->string, key->string, qfalse) != -1) {
+								if (StringContains(ms->string, key->string) != -1) {
 									SourceWarning(source,
 												  "the key %s with prefix ! is inside "
 												  "the match template string %s",
@@ -2223,9 +2218,9 @@ int BotReplyChat(int chatstate, char *message, int mcontext, int vcontext, char 
 			res = qfalse;
 			// get the match result
 			if (key->flags & RCKFL_NAME)
-				res = (StringContains(message, cs->name, qfalse) != -1);
+				res = (StringContains(message, cs->name) != -1);
 			else if (key->flags & RCKFL_BOTNAMES)
-				res = (StringContains(key->string, cs->name, qfalse) != -1);
+				res = (StringContains(key->string, cs->name) != -1);
 			else if (key->flags & RCKFL_GENDERFEMALE)
 				res = (cs->gender == CHAT_GENDERFEMALE);
 			else if (key->flags & RCKFL_GENDERMALE)
