@@ -6,6 +6,9 @@ else()
 	set(GLSL_LANG_VALIDATOR ${CODE_DIR}/../tools/windows/glslangValidator.exe)
 endif()
 
+check_compiler_flag(-Wall)
+check_compiler_flag(-Wextra)
+
 set(QCOMMON_COLLISION_SRCS
 	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/cm_load.c
 	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/cm_local.h
