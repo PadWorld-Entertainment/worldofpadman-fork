@@ -12,6 +12,10 @@ option(BUILD_RENDERER_OPENGL2 "" ON)
 option(BUILD_RENDERER_VULKAN "" ON)
 option(USE_VOIP "" ON)
 option(USE_RENDERER_DLOPEN "" ON)
+option(USE_CURL_DLOPEN "" ON)
+option(USE_OPENAL_DLOPEN "" ON)
+option(USE_CURL "" ON)
+option(USE_MUMBLE "" ON)
 
 if (MSVC)
 	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /MANIFEST:NO")
@@ -21,6 +25,7 @@ if (MSVC)
 	# 4305 truncation from 'double' to 'float'
 	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /wd4267 /wd4244 /wd4305")
 	add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
+	set(USE_CURL OFF)
 endif()
 
 if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
