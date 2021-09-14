@@ -8,7 +8,6 @@
 #define ARROWDOWN1 "menu/server/arrowdown1"
 
 static char *serverinfo_artlist[] = {ARROWUP0, ARROWUP1, ARROWDOWN0, ARROWDOWN1,
-
 									 NULL};
 
 #define ID_ADD 100

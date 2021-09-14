@@ -59,10 +59,13 @@ SOUND OPTIONS MENU
 #define ID_GAINWHILECAPTURE 22
 #define ID_VOIPMODE 23
 #define ID_RECORDMODE 24
+#define ID_CAPTURETARGET 25
 
 #define POSITION_X 180
 
-static const char *recording_modes[] = {"Push to talk", "Automatic", 0};
+static const char *recording_modes[] = {"Push to talk", "Automatic", NULL};
+static const char *capture_targets[] = {"all", "none", "attacker", "crosshair", "spatial", NULL};
+static const char *capture_target_custom[] = {"custom", NULL};
 
 #define DEFAULT_SDL_SND_SPEED 44100
 
@@ -91,6 +94,8 @@ typedef struct {
 	menutext_s voipmode_grayed;
 	menuslider_s voiceThresholdVAD;
 	menuslider_s voiceGainDuringCapture;
+	menulist_s captureTarget;
+	qboolean customCaptureTarget;
 
 	menubitmap_s apply;
 	menubitmap_s back;
@@ -100,6 +105,36 @@ typedef struct {
 } soundOptionsInfo_t;
 
 static soundOptionsInfo_t soundOptionsInfo;
+
+static void UI_SoundOptionsMenu_UpdateCaptureTarget(void) {
+	int i;
+	const char **s;
+	char captureTarget[MAX_CVAR_VALUE_STRING];
+
+	trap_Cvar_VariableStringBuffer("cl_voipSendTarget", captureTarget, sizeof(captureTarget));
+
+	for (i = 0, s = capture_targets; *s != NULL; ++s, ++i) {
+		if (!strcmp(*s, captureTarget)) {
+			soundOptionsInfo.customCaptureTarget = qfalse;
+			soundOptionsInfo.captureTarget.curvalue = i;
+			soundOptionsInfo.captureTarget.generic.flags &= ~QMF_INACTIVE;
+			soundOptionsInfo.captureTarget.itemnames = capture_targets;
+			soundOptionsInfo.captureTarget.generic.toolTip =
+				"'all' to broadcast to everyone. "
+				"'none' to send to no one. "
+				"'attacker' to send to the last person that hit you. "
+				"'crosshair' to send to the people currently in your crosshair. "
+				"'spatial' to talk to all people in hearing range.";
+			SpinControl_Init(&soundOptionsInfo.captureTarget);
+			return;
+		}
+	}
+	soundOptionsInfo.captureTarget.itemnames = capture_target_custom;
+	soundOptionsInfo.captureTarget.generic.toolTip = "Custom settings found";
+	soundOptionsInfo.captureTarget.generic.flags |= QMF_INACTIVE;
+	soundOptionsInfo.customCaptureTarget = qtrue;
+	SpinControl_Init(&soundOptionsInfo.captureTarget);
+}
 
 static void UI_SoundOptionsMenu_Update(void) {
 	// openAL and a high rate are conditions for all voip settings
@@ -116,6 +151,7 @@ static void UI_SoundOptionsMenu_Update(void) {
 		soundOptionsInfo.voipRecordMode.generic.flags |= QMF_GRAYED;
 		soundOptionsInfo.voiceThresholdVAD.generic.flags |= QMF_GRAYED;
 		soundOptionsInfo.voiceGainDuringCapture.generic.flags |= QMF_GRAYED;
+		soundOptionsInfo.captureTarget.generic.flags |= QMF_GRAYED;
 	} else {
 		soundOptionsInfo.voipmode_grayed.generic.flags |= QMF_HIDDEN;
 		soundOptionsInfo.voipmode.generic.flags &= ~QMF_GRAYED;
@@ -124,9 +160,11 @@ static void UI_SoundOptionsMenu_Update(void) {
 			soundOptionsInfo.voipRecordMode.generic.flags |= QMF_GRAYED;
 			soundOptionsInfo.voiceThresholdVAD.generic.flags |= QMF_GRAYED;
 			soundOptionsInfo.voiceGainDuringCapture.generic.flags |= QMF_GRAYED;
+			soundOptionsInfo.captureTarget.generic.flags |= QMF_GRAYED;
 		} else {
 			soundOptionsInfo.voipRecordMode.generic.flags &= ~QMF_GRAYED;
 			soundOptionsInfo.voiceGainDuringCapture.generic.flags &= ~QMF_GRAYED;
+			soundOptionsInfo.captureTarget.generic.flags &= QMF_GRAYED;
 
 			if (hideVADThreshold)
 				soundOptionsInfo.voiceThresholdVAD.generic.flags |= QMF_GRAYED;
@@ -134,6 +172,8 @@ static void UI_SoundOptionsMenu_Update(void) {
 				soundOptionsInfo.voiceThresholdVAD.generic.flags &= ~QMF_GRAYED;
 		}
 	}
+
+	UI_SoundOptionsMenu_UpdateCaptureTarget();
 
 	// move voip settings down to make space for the voipmode_grayed text
 	// or move them back up
@@ -148,6 +188,8 @@ static void UI_SoundOptionsMenu_Update(void) {
 	soundOptionsInfo.voiceThresholdVAD.generic.y = y;
 	y += BIGCHAR_HEIGHT + 2;
 	soundOptionsInfo.voiceGainDuringCapture.generic.y = y;
+	y += BIGCHAR_HEIGHT + 2;
+	soundOptionsInfo.captureTarget.generic.y = y;
 }
 /*
 =================
@@ -204,6 +246,12 @@ static void UI_SoundOptionsMenu_Event(void *ptr, int event) {
 
 	case ID_VOICETHRESHOLD:
 		trap_Cvar_SetValue("cl_voipVADThreshold", soundOptionsInfo.voiceThresholdVAD.curvalue / 10);
+		break;
+
+	case ID_CAPTURETARGET:
+		if (!soundOptionsInfo.customCaptureTarget) {
+			trap_Cvar_Set("cl_voipSendTarget", capture_targets[soundOptionsInfo.captureTarget.curvalue]);
+		}
 		break;
 
 	case ID_BACK:
@@ -443,6 +491,16 @@ static void UI_SoundOptionsMenu_Init(void) {
 		"This is the volume of audio coming out of your speakers while you are recording sound for transmission. This "
 		"prevents audio feedback and echo. If you're using headphones, you don't need to turn this down.";
 
+	y += BIGCHAR_HEIGHT + 2;
+	soundOptionsInfo.captureTarget.generic.type = MTYPE_SPINCONTROL;
+	soundOptionsInfo.captureTarget.generic.name = "Capture Target:";
+	soundOptionsInfo.captureTarget.generic.flags = QMF_SMALLFONT;
+	soundOptionsInfo.captureTarget.generic.callback = UI_SoundOptionsMenu_Event;
+	soundOptionsInfo.captureTarget.generic.id = ID_CAPTURETARGET;
+	soundOptionsInfo.captureTarget.generic.x = POSITION_X;
+	soundOptionsInfo.captureTarget.generic.y = y;
+	soundOptionsInfo.customCaptureTarget = qtrue;
+
 	soundOptionsInfo.back.generic.type = MTYPE_BITMAP;
 	soundOptionsInfo.back.generic.name = BACK0;
 	soundOptionsInfo.back.generic.flags = QMF_LEFT_JUSTIFY | QMF_PULSEIFFOCUS;
@@ -480,6 +538,7 @@ static void UI_SoundOptionsMenu_Init(void) {
 	Menu_AddItem(&soundOptionsInfo.menu, (void *)&soundOptionsInfo.voipRecordMode);
 	Menu_AddItem(&soundOptionsInfo.menu, (void *)&soundOptionsInfo.voiceThresholdVAD);
 	Menu_AddItem(&soundOptionsInfo.menu, (void *)&soundOptionsInfo.voiceGainDuringCapture);
+	Menu_AddItem(&soundOptionsInfo.menu, (void *)&soundOptionsInfo.captureTarget);
 	Menu_AddItem(&soundOptionsInfo.menu, (void *)&soundOptionsInfo.back);
 	Menu_AddItem(&soundOptionsInfo.menu, (void *)&soundOptionsInfo.apply);
 
