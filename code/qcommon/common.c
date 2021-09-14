@@ -1617,12 +1617,16 @@ The server calls this before shutting down or loading a new map
 */
 void Hunk_Clear(void) {
 #ifndef DEDICATED
+#ifndef TESTS
 	CL_ShutdownCGame();
 	CL_ShutdownUI();
 #endif
+#endif
 	SV_ShutdownGameProgs();
 #ifndef DEDICATED
+#ifndef TESTS
 	CIN_CloseAllVideos();
+#endif
 #endif
 	hunk_low.mark = 0;
 	hunk_low.permanent = 0;
@@ -3161,6 +3165,7 @@ static qboolean Field_Complete(void) {
 }
 
 #ifndef DEDICATED
+#ifndef TESTS
 /*
 ===============
 Field_CompleteKeyname
@@ -3175,6 +3180,7 @@ void Field_CompleteKeyname(void) {
 	if (!Field_Complete())
 		Key_KeynameCompletion(PrintMatches);
 }
+#endif
 #endif
 
 void Field_CompleteFilenameMultiple(const char *dir, const char **ext, int cnt, qboolean allowNonPureFilesOnDisk) {
