@@ -190,8 +190,7 @@ void UI_DrawConnectScreen(qboolean overlay) {
 		// UI_DrawHandlePic( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, uis.connectingBG );
 		// stretch it like in cgame ...
 		if (*downloadName)
-			trap_R_DrawStretchPic(0, 0, uis.glconfig.vidWidth, uis.glconfig.vidHeight, 0, 0, 1, 1,
-								  uis.pad_menubgfx);
+			trap_R_DrawStretchPic(0, 0, uis.glconfig.vidWidth, uis.glconfig.vidHeight, 0, 0, 1, 1, uis.pad_menubgfx);
 		else
 			trap_R_DrawStretchPic(0, 0, uis.glconfig.vidWidth, uis.glconfig.vidHeight, 0, 0, 1, 1, uis.connectingBG);
 	} else {

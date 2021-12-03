@@ -624,7 +624,7 @@ typedef struct {
 
 	qhandle_t pad_menubgfx; // other menu bg fx shader
 	qhandle_t pad_mainbgfx; // main menu bg fx shader
-	qhandle_t pad_mainframe; 
+	qhandle_t pad_mainframe;
 	qhandle_t pad_setupbg;
 	qhandle_t pad_display;
 	qhandle_t pad_defaults;

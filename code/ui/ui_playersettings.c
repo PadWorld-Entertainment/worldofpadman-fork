@@ -253,7 +253,7 @@ static void PlayerSettings_SaveChanges(void) {
 	// handicap
 	// NOTE: We do not use this currently. Some players reported they always get handicap 5 when using the player setup
 	// menu
-	trap_Cvar_SetValue( "handicap", 100 - s_playersettings.handicap.curvalue * 10 );
+	trap_Cvar_SetValue("handicap", 100 - s_playersettings.handicap.curvalue * 10);
 
 	// effects color
 	trap_Cvar_SetValue("color1", uitogamecode[s_playersettings.effects.curvalue]);
@@ -618,7 +618,7 @@ static void PlayerSettings_MenuEvent(void *ptr, int event) {
 	switch (tmpid) {
 
 	case ID_HANDICAP:
-		trap_Cvar_Set( "handicap", va( "%i", 100 - 25 * s_playersettings.handicap.curvalue ) );
+		trap_Cvar_Set("handicap", va("%i", 100 - 25 * s_playersettings.handicap.curvalue));
 		break;
 
 	case ID_BACK:
@@ -898,7 +898,7 @@ static void PlayerSettings_MenuInit(void) {
 	s_playersettings.name.generic.right = 20 + 130;
 	s_playersettings.name.generic.bottom = 160 + 2 * PROP_HEIGHT;
 
-	y += 3*(BIGCHAR_HEIGHT + 2);
+	y += 3 * (BIGCHAR_HEIGHT + 2);
 	s_playersettings.handicapheader.generic.type = MTYPE_TEXT;
 	s_playersettings.handicapheader.generic.x = XPOSITION;
 	s_playersettings.handicapheader.generic.y = y;
@@ -909,14 +909,14 @@ static void PlayerSettings_MenuInit(void) {
 	y += BIGCHAR_HEIGHT + 2;
 	s_playersettings.handicap.generic.type = MTYPE_SPINCONTROL;
 	s_playersettings.handicap.generic.name = "";
-	s_playersettings.handicap.generic.flags	= QMF_SMALLFONT;
+	s_playersettings.handicap.generic.flags = QMF_SMALLFONT;
 	s_playersettings.handicap.generic.id = ID_HANDICAP;
 	s_playersettings.handicap.generic.callback = PlayerSettings_MenuEvent;
-	s_playersettings.handicap.generic.x	= XPOSITION;
-	s_playersettings.handicap.generic.y	= y;
-	s_playersettings.handicap.itemnames	= handicap_items;
+	s_playersettings.handicap.generic.x = XPOSITION;
+	s_playersettings.handicap.generic.y = y;
+	s_playersettings.handicap.itemnames = handicap_items;
 
-	y += 2*(BIGCHAR_HEIGHT + 2);
+	y += 2 * (BIGCHAR_HEIGHT + 2);
 	s_playersettings.logoheader.generic.type = MTYPE_TEXT;
 	s_playersettings.logoheader.generic.x = XPOSITION;
 	s_playersettings.logoheader.generic.y = y;
@@ -947,7 +947,7 @@ static void PlayerSettings_MenuInit(void) {
 	Menu_AddItem(&s_playersettings.menu, &s_playersettings.nameheader);
 	Menu_AddItem(&s_playersettings.menu, &s_playersettings.name);
 	Menu_AddItem(&s_playersettings.menu, &s_playersettings.handicapheader);
-	Menu_AddItem(&s_playersettings.menu, &s_playersettings.handicap );
+	Menu_AddItem(&s_playersettings.menu, &s_playersettings.handicap);
 	Menu_AddItem(&s_playersettings.menu, &s_playersettings.logoheader);
 	Menu_AddItem(&s_playersettings.menu, &s_playersettings.spraylogos_prev);
 	Menu_AddItem(&s_playersettings.menu, &s_playersettings.spraylogos_next);

@@ -225,7 +225,7 @@ static void Preferences_SetMenuItems(void) {
 		if (trap_Cvar_VariableValue("bot_fastchat") != 0) {
 			s_preferences.botchat.curvalue = 2;
 		} else {
-			s_preferences.botchat.curvalue = 1;			
+			s_preferences.botchat.curvalue = 1;
 		}
 	} else {
 		s_preferences.botchat.curvalue = 0;
@@ -729,7 +729,7 @@ static void Preferences_MenuInit(void) {
 	s_preferences.forcemodel.generic.id = ID_FORCEMODEL;
 	s_preferences.forcemodel.generic.x = XPOSITION;
 	s_preferences.forcemodel.generic.y = y;
-	s_preferences.forcemodel.generic.toolTip = 
+	s_preferences.forcemodel.generic.toolTip =
 		"Enable this to force all opponents to be displayed to you with your selected "
 		"character model in the game.";
 
@@ -764,7 +764,7 @@ static void Preferences_MenuInit(void) {
 	s_preferences.connotify.generic.x = XPOSITION;
 	s_preferences.connotify.generic.y = y;
 	s_preferences.connotify.itemnames = connotify_names;
-	s_preferences.connotify.generic.toolTip = 
+	s_preferences.connotify.generic.toolTip =
 		"Select whether you prefer notifications to appear short (2s), default (4s), long (6s), "
 		"or maximum (8s) at the top of the screen.";
 
@@ -777,7 +777,7 @@ static void Preferences_MenuInit(void) {
 	s_preferences.chatheight.generic.x = XPOSITION;
 	s_preferences.chatheight.generic.y = y;
 	s_preferences.chatheight.itemnames = chatheight_names;
-	s_preferences.chatheight.generic.toolTip = 
+	s_preferences.chatheight.generic.toolTip =
 		"Select whether you prefer notifications to appear default (up to 4 lines), expanded "
 		"(up to 6 lines), or maximum (up to 8 lines) at the top of the screen.";
 
@@ -789,7 +789,7 @@ static void Preferences_MenuInit(void) {
 	s_preferences.drawchaticon.generic.id = ID_DRAWCHATICON;
 	s_preferences.drawchaticon.generic.x = XPOSITION;
 	s_preferences.drawchaticon.generic.y = y;
-	s_preferences.drawchaticon.generic.toolTip = 
+	s_preferences.drawchaticon.generic.toolTip =
 		"Disable this to remove the player icon at the beginning of a chat notification.";
 
 	y += BIGCHAR_HEIGHT + 2;
@@ -812,7 +812,7 @@ static void Preferences_MenuInit(void) {
 	s_preferences.botchat.generic.x = XPOSITION;
 	s_preferences.botchat.generic.y = y;
 	s_preferences.botchat.itemnames = botchat_names;
-	s_preferences.botchat.generic.toolTip = 
+	s_preferences.botchat.generic.toolTip =
 		"Set this to off to prevent the bots from chatting and silence them, or set it to "
 		"often to make the bots more talkative.";
 
@@ -824,7 +824,7 @@ static void Preferences_MenuInit(void) {
 	s_preferences.teamchatsonly.generic.id = ID_TEAMCHATSONLY;
 	s_preferences.teamchatsonly.generic.x = XPOSITION;
 	s_preferences.teamchatsonly.generic.y = y;
-	s_preferences.teamchatsonly.generic.toolTip = 
+	s_preferences.teamchatsonly.generic.toolTip =
 		"Enable this to force only chat messages from your teammates to be displayed.";
 
 	// help options
