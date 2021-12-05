@@ -100,7 +100,6 @@ static void SetupDefaultMenu_Event(void *ptr, int event) {
 
 	switch (((menucommon_s *)ptr)->id) {
 	case ID_DEFAULT_YES:
-		//		UI_PopMenu();
 		trap_Cmd_ExecuteText(EXEC_APPEND, "exec default.cfg\n");
 		trap_Cmd_ExecuteText(EXEC_APPEND, "cvar_restart\n");
 		trap_Cmd_ExecuteText(EXEC_APPEND, "vid_restart\n");
@@ -113,8 +112,9 @@ static void SetupDefaultMenu_Event(void *ptr, int event) {
 }
 
 static void SetupDefaultMenu_Draw(void) {
-	UI_DrawStringNS(320 - 145, 380, "This will reset *^1ALL^3* options", UI_LEFT, 20, color_yellow);
-	UI_DrawStringNS(320, 380 + 22, "to their default values.", UI_CENTER, 20, color_yellow);
+	UI_DrawProportionalString(2 * (SCREEN_WIDTH / 3), 260, "SET TO DEFAULTS?", (UI_CENTER | UI_SMALLFONT), color_white);
+	UI_DrawStringNS(2 * (SCREEN_WIDTH / 3) + 20, 380, "This will reset *^1ALL^3* options", UI_CENTER, 20, color_yellow);
+	UI_DrawStringNS(2 * (SCREEN_WIDTH / 3), 380 + 22, "to their default values.", UI_CENTER, 20, color_yellow);
 	Menu_Draw(&setupDefaultMenu.menu);
 }
 
@@ -135,40 +135,41 @@ static void SetupDefaultMenu_Init(void) {
 	setupDefaultMenu.Yes.generic.type = MTYPE_BITMAP;
 	setupDefaultMenu.Yes.generic.name = YES0;
 	setupDefaultMenu.Yes.generic.flags = QMF_LEFT_JUSTIFY | QMF_HIGHLIGHT_IF_FOCUS;
-	setupDefaultMenu.Yes.generic.x = 380; // 349;
-	setupDefaultMenu.Yes.generic.y = 284; // 241;
+	setupDefaultMenu.Yes.generic.x = 496;
+	setupDefaultMenu.Yes.generic.y = 288;
 	setupDefaultMenu.Yes.generic.id = ID_DEFAULT_YES;
 	setupDefaultMenu.Yes.generic.callback = SetupDefaultMenu_Event;
 	setupDefaultMenu.Yes.width = 80;
 	setupDefaultMenu.Yes.height = 40;
 	setupDefaultMenu.Yes.focuspic = YES1;
 	setupDefaultMenu.Yes.focuspicinstead = qtrue;
-	Menu_AddItem(&setupDefaultMenu.menu, &setupDefaultMenu.Yes);
 
 	setupDefaultMenu.No.generic.type = MTYPE_BITMAP;
 	setupDefaultMenu.No.generic.name = NO0;
 	setupDefaultMenu.No.generic.flags = QMF_LEFT_JUSTIFY | QMF_HIGHLIGHT_IF_FOCUS;
-	setupDefaultMenu.No.generic.x = 497; // 449;
-	setupDefaultMenu.No.generic.y = 284; // 241;
+	setupDefaultMenu.No.generic.x = 616;
+	setupDefaultMenu.No.generic.y = 288;
 	setupDefaultMenu.No.generic.id = ID_DEFAULT_NO;
 	setupDefaultMenu.No.generic.callback = SetupDefaultMenu_Event;
 	setupDefaultMenu.No.width = 40;
 	setupDefaultMenu.No.height = 40;
 	setupDefaultMenu.No.focuspic = NO1;
 	setupDefaultMenu.No.focuspicinstead = qtrue;
-	Menu_AddItem(&setupDefaultMenu.menu, &setupDefaultMenu.No);
 
 	setupDefaultMenu.Back.generic.type = MTYPE_BITMAP;
 	setupDefaultMenu.Back.generic.name = BACK0;
 	setupDefaultMenu.Back.generic.flags = QMF_LEFT_JUSTIFY | QMF_PULSEIFFOCUS;
 	setupDefaultMenu.Back.generic.x = 8;
-	setupDefaultMenu.Back.generic.y = 440;
+	setupDefaultMenu.Back.generic.y = 446;
 	setupDefaultMenu.Back.generic.id = ID_DEFAULT_BACK;
 	setupDefaultMenu.Back.generic.callback = SetupDefaultMenu_Event;
 	setupDefaultMenu.Back.width = 80;
 	setupDefaultMenu.Back.height = 40;
 	setupDefaultMenu.Back.focuspic = BACK1;
 	setupDefaultMenu.Back.focuspicinstead = qtrue;
+
+	Menu_AddItem(&setupDefaultMenu.menu, &setupDefaultMenu.Yes);
+	Menu_AddItem(&setupDefaultMenu.menu, &setupDefaultMenu.No);
 	Menu_AddItem(&setupDefaultMenu.menu, &setupDefaultMenu.Back);
 
 	UI_PushMenu(&setupDefaultMenu.menu);
